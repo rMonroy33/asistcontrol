@@ -16,7 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from asistencia import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # URL para el registro de asistencia
+    path('', views.registro_asistencia, name='registro_asistencia'),
 ]

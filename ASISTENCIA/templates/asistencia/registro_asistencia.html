@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Asistencia</title>
+</head>
+
+<body>
+    <h1>Registro de Asistencia</h1>
+
+    {# Mostrar mensajes de éxito o error #}
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <label for="codigo">Ingresa el nombre número de control del alumno: </label>
+        <input type="text" id="codigo" name="codigo" required autofocus>
+        <button type="submit">Registrar Asistencia</button>
+    </form>
+
+    <hr>
+    <p><a href="">Ver Reporte</a></p>
+</body>
+</html>
