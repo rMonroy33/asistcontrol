@@ -144,18 +144,18 @@ def registro_asistencia(request):
 # ======================== VISTAS PARA MÓDULO DE REPORTES ========================
 
 def reportes_principal(request):
-    """
-    P7: Diseñar vista de Reportes
-    Crear una página principal con opciones para seleccionar el tipo de reporte deseado (Diario, Semanal, Mensual)
-    """
+
+    #P7: Diseñar vista de Reportes
+    #Crear una página principal con opciones para seleccionar el tipo de reporte deseado (Diario, Semanal, Mensual)
+    
     return render(request, 'asistencia/reportes_principal.html')
 
 
 def reporte_diario(request):
-    """
-    P8: Generar Reporte Diario
-    Implementar la lógica en la vista para filtrar y mostrar la asistencia por un día específico
-    """
+    
+    #P8: Generar Reporte Diario
+    #Implementar la lógica en la vista para filtrar y mostrar la asistencia por un día específico
+    
     fecha_seleccionada = request.GET.get('fecha')
     
     if fecha_seleccionada:
@@ -177,10 +177,10 @@ def reporte_diario(request):
 
 
 def reporte_semanal(request):
-    """
-    P9: Generar Reporte Semanal
-    Implementar la lógica para filtrar y agregar la asistencia por un rango de 7 días
-    """
+    
+    #P9: Generar Reporte Semanal
+    #Implementar la lógica para filtrar y agregar la asistencia por un rango de 7 días
+    
     fecha_inicio_str = request.GET.get('fecha_inicio')
     
     if fecha_inicio_str:
@@ -219,10 +219,10 @@ def reporte_semanal(request):
 
 
 def reporte_mensual(request):
-    """
-    P10: Generar Reporte Mensual
-    Implementar la lógica para filtrar y resumir la asistencia por un mes y año específicos
-    """
+    
+    #P10: Generar Reporte Mensual
+    #Implementar la lógica para filtrar y resumir la asistencia por un mes y año específicos
+    
     mes = request.GET.get('mes')
     anio = request.GET.get('anio')
     
@@ -268,10 +268,10 @@ def reporte_mensual(request):
 
 
 def exportar_reportes(request):
-    """
-    P11: Exportar reportes a Excel
-    Añadir funcionalidad a las vistas de reportes para que los datos puedan ser descargados en formato Excel
-    """
+    
+    #P11: Exportar reportes a Excel
+    #Añadir funcionalidad a las vistas de reportes para que los datos puedan ser descargados en formato Excel
+    
     tipo_reporte = request.GET.get('tipo', 'diario')
     
     # Preparar datos según el tipo de reporte
@@ -313,10 +313,10 @@ def exportar_reportes(request):
 
 
 def _exportar_excel(asistencias, filename, tipo_reporte):
-    """
-    Función auxiliar para exportar datos a Excel
-    Requiere la librería openpyxl: pip install openpyxl
-    """
+    
+    #Función auxiliar para exportar datos a Excel
+    #Requiere la librería openpyxl: pip install openpyxl
+    
     try:
         import openpyxl
         from django.http import HttpResponse
