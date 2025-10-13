@@ -1,3 +1,4 @@
+import re
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Alumno, Asistencia
@@ -60,9 +61,32 @@ def registro_alumno(request):
     if request.method == 'POST':
         form = AlumnoForm(request.POST)
         if form.is_valid():
+
+            nombre = form.cleaned_data['nombre']
+            nombre = nombre.upper()
+            if not re.match(r'^[A-ZÁÉÍÓÚÑ\s]+$', nombre):
+                messages.error(request, 'El nombre solo puede contener letras')
+                context = {'form': form}
+                return render(request, 'asistencia/registro_alumno.html', context)        
+    
+            num_control = form.cleaned_data['num_control']
+            if not re.match(r'^[0-9]{8}$', num_control):
+                messages.error(request, 'El número de control debe contener solo dígitos (8)')
+                context = {'form': form}
+                return render(request, 'asistencia/registro_alumno.html', context)
+            
+            carrera = form.cleaned_data['carrera']
+            carrera = carrera.upper()
+            if not re.match(r'^[A-ZÁÉÍÓÚ\s]+$', carrera):
+                messages.error(request, 'La carrera solo puede contener letras')
+                context = {'form': form}
+                return render(request, 'asistencia/registro_alumno.html', context)
+            
+            form.instance.nombre = nombre
+            form.instance.carrera = carrera
             alumno = form.save()
             messages.success(request, f'Alumno {alumno.nombre} registrado exitosamente con número de control {alumno.num_control}.')
-            return redirect('alumnosGet')
+            return redirect('registro_alumno')
         else:
             messages.error(request, 'Por favor corrige los errores en el formulario.')
     else:
@@ -93,10 +117,11 @@ def asistenciasGet(request):
     return render(request, 'asistencia/asistenciasGet.html', context)
 
 def registro_asistencia(request):
-    """Vista para registrar la asistencia de un alumno."""
     if request.method == 'POST':
         codigo_alumno = request.POST.get('codigo').strip().upper()
-        
+        if not re.match(r'^[0-9]{8}$', codigo_alumno):
+            messages.error(request, 'El código de alumno debe contener solo dígitos (8).')
+            return redirect('registro_asistencia')
         try:
             alumno = Alumno.objects.get(num_control=codigo_alumno)
         except Alumno.DoesNotExist:
@@ -110,7 +135,7 @@ def registro_asistencia(request):
             Asistencia.objects.create(alumno=alumno)
             messages.success(request, f"Asistencia registrada con éxito para {alumno.nombre}.")
 
-        return redirect('asistenciasGet')
+        return redirect('registro_asistencia')
 
     context = {}
     return render(request, 'asistencia/registro_asistencia.html', context)
