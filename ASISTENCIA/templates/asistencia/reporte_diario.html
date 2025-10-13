@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'asistencia/css/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'asistencia/css/reportes.css' %}">
     <title>Reporte Diario - Sistema de Asistencia</title>
 </head>
 <body>
@@ -60,60 +61,6 @@
         {% endif %}
     </div>
 
-    <style>
-        .filter-section {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
 
-        .form-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .asistencias-list {
-            margin: 20px 0;
-        }
-
-        .asistencia-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            margin: 10px 0;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .hora-info {
-            font-weight: bold;
-            color: #007bff;
-        }
-
-        .export-section {
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .btn-export {
-            background: #28a745;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: bold;
-            display: inline-block;
-            transition: background 0.2s ease;
-        }
-
-        .btn-export:hover {
-            background: #218838;
-            text-decoration: none;
-        }
-    </style>
 </body>
 </html>
