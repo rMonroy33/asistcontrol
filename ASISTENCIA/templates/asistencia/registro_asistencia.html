@@ -1,30 +1,39 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Registro de Asistencia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'asistencia/css/forms.css' %}">
+    <title>Registrar Asistencia</title>
 </head>
 
 <body>
-    <h1>Registro de Asistencia</h1>
+    <div class="container">
+        <h1>✅ Registrar Asistencia</h1>
+        
+        <!-- Navegación -->
+        <div class="navigation">
+            <a href="{% url 'asistenciasGet' %}">Asistencias</a>
+        </div>
 
-    {# Mostrar mensajes de éxito o error #}
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+        {# Mostrar mensajes de éxito o error #}
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
 
-    <form method="post">
-        {% csrf_token %}
-        <label for="codigo">Ingresa el nombre número de control del alumno: </label>
-        <input type="text" id="codigo" name="codigo" required autofocus>
-        <button type="submit">Registrar Asistencia</button>
-    </form>
-
-    <hr>
-    <p><a href="">Ver Reporte</a></p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="codigo">Ingresa el número de control del alumno:</label>
+                <input type="text" id="codigo" name="codigo" required autofocus placeholder="Ej: 20120001">
+            </div>
+            <button type="submit" class="btn">✅ Registrar Asistencia</button>
+        </form>
+    </div>
 </body>
 </html>

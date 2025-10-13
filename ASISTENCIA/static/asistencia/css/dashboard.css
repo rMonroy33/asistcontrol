@@ -1,0 +1,393 @@
+/* Dashboard */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+    background: #f5f7fa;
+    height: 100vh;
+    overflow: hidden;
+    color: #2c3e50;
+    margin: 0;
+    padding: 0;
+}
+
+.dashboard-container {
+    height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 25px;
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e1e8ed;
+}
+
+.header h1 {
+    color: #2c3e50;
+    font-size: 1.8rem;
+    font-weight: 400;
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+}
+
+.fecha {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    font-weight: 400;
+}
+
+/* Grid de módulos */
+.modules-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Tarjetas de módulos */
+.module-card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e1e8ed;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 150px;
+    max-width: 250px;
+}
+
+.module-card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border-color: #d1d9e0;
+}
+
+.module-card.active {
+    background: #34495e;
+    color: white;
+}
+
+.module-card.active .module-icon {
+    color: white;
+}
+
+.module-card.active h3,
+.module-card.active p {
+    color: white;
+}
+
+.module-card.active .module-button {
+    background: white;
+    color: #34495e;
+}
+
+.module-card.active .module-button:hover {
+    background: #ecf0f1;
+}
+
+/* Iconos de módulos */
+.module-icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 12px;
+    color: #34495e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.module-card.active .module-icon {
+    color: white;
+}
+
+/* Títulos y texto de módulos */
+.module-card h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #2c3e50;
+}
+
+.module-card p {
+    color: #7f8c8d;
+    font-size: 0.8rem;
+    line-height: 1.3;
+    margin-bottom: 15px;
+}
+
+/* Botones de módulos */
+.module-button {
+    display: inline-block;
+    background: #3498db;
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: center;
+}
+
+.module-button:hover {
+    background: #2980b9;
+    transform: translateY(-1px);
+}
+
+/* Sección de estadísticas */
+.stats-section {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e1e8ed;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 400;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    color: #7f8c8d;
+    font-size: 0.85rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 20px 15px;
+    }
+    
+    .header h1 {
+        font-size: 2rem;
+    }
+    
+    .modules-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .module-card {
+        padding: 20px;
+    }
+    
+    .stats-section {
+        flex-direction: column;
+        gap: 30px;
+        align-items: center;
+    }
+    
+    .stat-value {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 20px;
+    }
+    
+    .header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .fecha {
+        font-size: 1rem;
+    }
+    
+    .module-card {
+        padding: 15px;
+    }
+    
+    .module-icon {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .module-card h3 {
+        font-size: 1.2rem;
+    }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .dashboard-container {
+        padding: 30px;
+    }
+    
+    .header h1 {
+        font-size: 2.5rem;
+    }
+    
+    .cards-container {
+        gap: 30px;
+    }
+    
+    .card {
+        min-height: 250px;
+        padding: 30px 25px;
+    }
+    
+    .card-icon {
+        font-size: 3.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 20px;
+    }
+    
+    .header h1 {
+        font-size: 2rem;
+    }
+    
+    .fecha {
+        font-size: 1.1rem;
+    }
+    
+    .cards-container {
+        grid-template-columns: 1fr;
+        gap: 25px;
+        max-width: 400px;
+    }
+    
+    .card {
+        min-height: 220px;
+        padding: 25px 20px;
+    }
+    
+    .card-icon {
+        font-size: 3rem;
+    }
+    
+    .card h3 {
+        font-size: 1.3rem;
+    }
+    
+    .quick-info {
+        gap: 40px;
+        margin-top: 30px;
+    }
+    
+    .info-number {
+        font-size: 2.5rem;
+    }
+    
+    .info-label {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-container {
+        padding: 15px;
+    }
+    
+    .header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .fecha {
+        font-size: 1rem;
+    }
+    
+    .card {
+        min-height: 200px;
+        padding: 20px 15px;
+    }
+    
+    .card-icon {
+        font-size: 2.5rem;
+    }
+    
+    .card h3 {
+        font-size: 1.2rem;
+    }
+    
+    .card p {
+        font-size: 0.9rem;
+    }
+    
+    .card-button {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .quick-info {
+        gap: 30px;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .info-number {
+        font-size: 2rem;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.header {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.card:nth-child(1) {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.card:nth-child(2) {
+    animation: fadeInUp 1s ease-out;
+}
+
+.card:nth-child(3) {
+    animation: fadeInUp 1.2s ease-out;
+}
+
+.quick-info {
+    animation: fadeInUp 1.4s ease-out;
+}

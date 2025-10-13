@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'asistencia/css/forms.css' %}">
+    <title>Lista de Asistencias</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Asistencias</h1>
+
+        <!-- Navegación -->
+        <div class="navigation">
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'registro_asistencia' %}">Registrar Asistencia</a>
+            <a href="{% url 'alumnosGet' %}">Alumnos</a>
+        </div>
+
+        <!-- Fecha actual -->
+        <div class="fecha-actual">
+            <strong>Fecha: {{ fecha_hoy|date:"d/m/Y" }}</strong>
+        </div>
+        <!-- Asistencias de hoy -->
+        <div class="asistencias-section">
+            <h3>📅 Asistencias de Hoy</h3>
+            {% if asistencias_hoy %}
+                {% for asistencia in asistencias_hoy %}
+                    <div class="asistencia-item">
+                        <div class="asistencia-info">
+                            <strong>{{ asistencia.alumno.nombre }}</strong><br>
+                            <small>
+                                <span class="carrera">{{ asistencia.alumno.carrera }}</span> | 
+                                <span class="num-control">{{ asistencia.alumno.num_control }}</span> | 
+                                <span class="hora">{{ asistencia.hora_entrada|time:"H:i" }}</span>
+                            </small>
+                        </div>
+                        <div class="asistencia-status">
+                            <span class="status-present">Presente</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-message">
+                    <p>No hay asistencias registradas para hoy.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Asistencias de la semana -->
+        {% if asistencias_semana %}
+            <div class="asistencias-section">
+                <h3>📊 Asistencias de la Semana</h3>
+                {% for asistencia in asistencias_semana %}
+                    <div class="asistencia-item">
+                        <div class="asistencia-info">
+                            <strong>{{ asistencia.alumno.nombre }}</strong><br>
+                            <small>
+                                <span class="fecha">{{ asistencia.fecha|date:"d/m/Y" }}</span> | 
+                                <span class="hora">{{ asistencia.hora_entrada|time:"H:i" }}</span> | 
+                                <span class="carrera">{{ asistencia.alumno.carrera }}</span>
+                            </small>
+                        </div>
+                        <div class="asistencia-status">
+                            <span class="status-present">✓</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -20,7 +20,15 @@ from asistencia import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
-    # URL para el registro de asistencia
-    path('', views.registro_asistencia, name='registro_asistencia'),
+    
+    # URL para el dashboard
+    path('', views.dashboard, name='dashboard'),
+    
+    # URLs para alumnos
+    path('alumnos/', views.alumnosGet, name='alumnosGet'),
+    path('alumnos/registrar/', views.registro_alumno, name='registro_alumno'),
+    
+    # URLs para asistencias
+    path('asistencias/', views.asistenciasGet, name='asistenciasGet'),
+    path('asistencias/registrar/', views.registro_asistencia, name='registro_asistencia'),
 ]

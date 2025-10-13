@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'asistencia/css/forms.css' %}">
+    <title>Lista de Alumnos</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Alumnos</h1>
+
+        <!-- Navegación -->
+        <div class="navigation">
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'registro_alumno' %}">Registrar Nuevo Alumno</a>
+            <a href="{% url 'asistenciasGet' %}">Ver Asistencias</a>
+        </div>
+        <!-- Lista de alumnos -->
+        {% if alumnos %}
+            <div class="alumnos-list">
+                <h3>📋 Alumnos Registrados</h3>
+                {% for alumno in alumnos %}
+                    <div class="alumno-item">
+                        <div class="alumno-info">
+                            <strong>{{ alumno.nombre }}</strong><br>
+                            <small>
+                                <span class="carrera">{{ alumno.carrera }}</span> | 
+                                <span class="num-control">Núm. Control: {{ alumno.num_control }}</span>
+                            </small>
+                        </div>
+                        <div class="alumno-actions">
+                            <span class="status-active">✓</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">👥</div>
+                <h3>No hay alumnos registrados</h3>
+                <p>Comienza registrando el primer alumno del sistema</p>
+                <a href="{% url 'registro_alumno' %}" class="btn-primary">Registrar Primer Alumno</a>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
