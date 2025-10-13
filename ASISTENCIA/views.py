@@ -6,6 +6,7 @@ from .forms import AlumnoForm
 from datetime import date, timedelta
 from django.db.models import Count
 
+
 def dashboard(request):
     hoy = date.today()
     
