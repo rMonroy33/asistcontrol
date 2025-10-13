@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'asistencia/css/forms.css' %}">
+    <title>Reporte Diario - Sistema de Asistencia</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Reporte Diario</h1>
+
+        <!-- Navegación -->
+        <div class="navigation">
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'reportes_principal' %}">← Volver a Reportes</a>
+        </div>
+
+        <!-- Formulario para seleccionar fecha -->
+        <div class="filter-section">
+            <form method="get">
+                <div class="form-group">
+                    <label for="fecha">Fecha:</label>
+                    <input type="date" id="fecha" name="fecha" value="{{ fecha_seleccionada|date:'Y-m-d' }}" required>
+                    <button type="submit" class="btn-primary">Filtrar</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Botón de exportar -->
+        {% if asistencias_dia %}
+            <div class="export-section">
+                <a href="{% url 'exportar_reportes' %}?tipo=diario&fecha={{ fecha_seleccionada|date:'Y-m-d' }}" 
+                   class="btn-export">📊 Exportar a Excel</a>
+            </div>
+        {% endif %}
+
+        <!-- Lista de asistencias del día -->
+        {% if asistencias_dia %}
+            <div class="asistencias-list">
+                <h3>Asistencias del {{ fecha_seleccionada|date:"d/m/Y" }}</h3>
+                {% for asistencia in asistencias_dia %}
+                    <div class="asistencia-item">
+                        <div class="alumno-info">
+                            <strong>{{ asistencia.alumno.nombre }}</strong><br>
+                            <small>{{ asistencia.alumno.carrera }} | {{ asistencia.alumno.num_control }}</small>
+                        </div>
+                        <div class="hora-info">
+                            {{ asistencia.hora_entrada|time:"H:i" }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h3>No hay asistencias registradas</h3>
+                <p>No se encontraron registros para el {{ fecha_seleccionada|date:"d/m/Y" }}</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <style>
+        .filter-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .asistencias-list {
+            margin: 20px 0;
+        }
+
+        .asistencia-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .hora-info {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .export-section {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .btn-export {
+            background: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            transition: background 0.2s ease;
+        }
+
+        .btn-export:hover {
+            background: #218838;
+            text-decoration: none;
+        }
+    </style>
+</body>
+</html>

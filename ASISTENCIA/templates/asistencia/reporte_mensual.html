@@ -1,0 +1,169 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'asistencia/css/forms.css' %}">
+    <title>Reporte Mensual - Sistema de Asistencia</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Reporte Mensual</h1>
+
+        <!-- Navegación -->
+        <div class="navigation">
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'reportes_principal' %}">← Volver a Reportes</a>
+        </div>
+
+        <!-- Formulario para seleccionar mes y año -->
+        <div class="filter-section">
+            <form method="get">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="mes">Mes:</label>
+                        <select id="mes" name="mes" required>
+                            <option value="1" {% if mes == 1 %}selected{% endif %}>Enero</option>
+                            <option value="2" {% if mes == 2 %}selected{% endif %}>Febrero</option>
+                            <option value="3" {% if mes == 3 %}selected{% endif %}>Marzo</option>
+                            <option value="4" {% if mes == 4 %}selected{% endif %}>Abril</option>
+                            <option value="5" {% if mes == 5 %}selected{% endif %}>Mayo</option>
+                            <option value="6" {% if mes == 6 %}selected{% endif %}>Junio</option>
+                            <option value="7" {% if mes == 7 %}selected{% endif %}>Julio</option>
+                            <option value="8" {% if mes == 8 %}selected{% endif %}>Agosto</option>
+                            <option value="9" {% if mes == 9 %}selected{% endif %}>Septiembre</option>
+                            <option value="10" {% if mes == 10 %}selected{% endif %}>Octubre</option>
+                            <option value="11" {% if mes == 11 %}selected{% endif %}>Noviembre</option>
+                            <option value="12" {% if mes == 12 %}selected{% endif %}>Diciembre</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="anio">Año:</label>
+                        <input type="number" id="anio" name="anio" value="{{ anio }}" min="2020" max="2030" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn-primary">Filtrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Resumen del período -->
+        <div class="period-summary">
+            <h3>{{ nombre_mes }} {{ anio }} - {{ total_asistencias }} asistencia{{ total_asistencias|pluralize }}s</h3>
+        </div>
+
+        <!-- Lista de asistencias del mes -->
+        {% if asistencias_mes %}
+            <div class="monthly-list">
+                <h3>Asistencias del Mes</h3>
+                <div class="monthly-attendance-list">
+                    {% for asistencia in asistencias_mes %}
+                        <div class="asistencia-item">
+                            <div class="alumno-info">
+                                <strong>{{ asistencia.alumno.nombre }}</strong><br>
+                                <small>{{ asistencia.alumno.carrera }} | {{ asistencia.alumno.num_control }}</small>
+                            </div>
+                            <div class="fecha-hora-info">
+                                <div>{{ asistencia.fecha|date:"d/m/Y" }}</div>
+                                <div>{{ asistencia.hora_entrada|time:"H:i" }}</div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h3>No hay datos para este período</h3>
+                <p>No se encontraron registros de asistencia para {{ nombre_mes }} {{ anio }}</p>
+            </div>
+        {% endif %}
+        
+        <div class="export-section">
+            <a href="{% url 'exportar_reportes' %}?tipo=mensual&mes={{ mes }}&anio={{ anio }}" 
+               class="btn-export">📊 Exportar a Excel</a>
+        </div>
+    </div>
+
+    <style>
+        .filter-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .period-summary {
+            background: #007bff;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .monthly-list {
+            margin: 20px 0;
+        }
+
+        .monthly-attendance-list {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .asistencia-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .asistencia-item:last-child {
+            border-bottom: none;
+        }
+
+        .fecha-hora-info {
+            text-align: right;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .export-section {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .btn-export {
+            background: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            transition: background 0.2s ease;
+        }
+
+        .btn-export:hover {
+            background: #218838;
+            text-decoration: none;
+        }
+    </style>
+</body>
+</html>

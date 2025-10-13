@@ -31,4 +31,11 @@ urlpatterns = [
     # URLs para asistencias
     path('asistencias/', views.asistenciasGet, name='asistenciasGet'),
     path('asistencias/registrar/', views.registro_asistencia, name='registro_asistencia'),
+    
+    # URLs para reportes
+    path('reportes/', views.reportes_principal, name='reportes_principal'),
+    path('reportes/diario/', views.reporte_diario, name='reporte_diario'),
+    path('reportes/semanal/', views.reporte_semanal, name='reporte_semanal'),
+    path('reportes/mensual/', views.reporte_mensual, name='reporte_mensual'),
+    path('reportes/exportar/', views.exportar_reportes, name='exportar_reportes'),
 ]

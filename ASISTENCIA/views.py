@@ -114,3 +114,228 @@ def registro_asistencia(request):
 
     context = {}
     return render(request, 'asistencia/registro_asistencia.html', context)
+
+
+# ======================== VISTAS PARA MÓDULO DE REPORTES ========================
+
+def reportes_principal(request):
+    """
+    P7: Diseñar vista de Reportes
+    Crear una página principal con opciones para seleccionar el tipo de reporte deseado (Diario, Semanal, Mensual)
+    """
+    return render(request, 'asistencia/reportes_principal.html')
+
+
+def reporte_diario(request):
+    """
+    P8: Generar Reporte Diario
+    Implementar la lógica en la vista para filtrar y mostrar la asistencia por un día específico
+    """
+    fecha_seleccionada = request.GET.get('fecha')
+    
+    if fecha_seleccionada:
+        try:
+            fecha_obj = date.fromisoformat(fecha_seleccionada)
+        except ValueError:
+            fecha_obj = date.today()
+    else:
+        fecha_obj = date.today()
+    
+    # Obtener asistencias del día seleccionado
+    asistencias_dia = Asistencia.objects.filter(fecha=fecha_obj).select_related('alumno').order_by('hora_entrada')
+    
+    context = {
+        'fecha_seleccionada': fecha_obj,
+        'asistencias_dia': asistencias_dia,
+    }
+    return render(request, 'asistencia/reporte_diario.html', context)
+
+
+def reporte_semanal(request):
+    """
+    P9: Generar Reporte Semanal
+    Implementar la lógica para filtrar y agregar la asistencia por un rango de 7 días
+    """
+    fecha_inicio_str = request.GET.get('fecha_inicio')
+    
+    if fecha_inicio_str:
+        try:
+            fecha_inicio = date.fromisoformat(fecha_inicio_str)
+        except ValueError:
+            fecha_inicio = date.today() - timedelta(days=6)
+    else:
+        fecha_inicio = date.today() - timedelta(days=6)
+    
+    # Calcular fecha de fin (6 días después del inicio para completar 7 días)
+    fecha_fin = fecha_inicio + timedelta(days=6)
+    
+    # Obtener asistencias en el rango de fechas
+    asistencias_semana = Asistencia.objects.filter(
+        fecha__range=[fecha_inicio, fecha_fin]
+    ).select_related('alumno').order_by('fecha', 'hora_entrada')
+    
+    # Agrupar asistencias por día
+    asistencias_por_dia = []
+    for i in range(7):
+        fecha_actual = fecha_inicio + timedelta(days=i)
+        asistencias_del_dia = asistencias_semana.filter(fecha=fecha_actual)
+        asistencias_por_dia.append({
+            'fecha': fecha_actual,
+            'asistencias': asistencias_del_dia,
+            'total': asistencias_del_dia.count()
+        })
+    
+    context = {
+        'fecha_inicio': fecha_inicio,
+        'fecha_fin': fecha_fin,
+        'asistencias_por_dia': asistencias_por_dia,
+    }
+    return render(request, 'asistencia/reporte_semanal.html', context)
+
+
+def reporte_mensual(request):
+    """
+    P10: Generar Reporte Mensual
+    Implementar la lógica para filtrar y resumir la asistencia por un mes y año específicos
+    """
+    mes = request.GET.get('mes')
+    anio = request.GET.get('anio')
+    
+    # Valores por defecto (mes y año actual)
+    fecha_actual = date.today()
+    if mes:
+        try:
+            mes = int(mes)
+        except ValueError:
+            mes = fecha_actual.month
+    else:
+        mes = fecha_actual.month
+        
+    if anio:
+        try:
+            anio = int(anio)
+        except ValueError:
+            anio = fecha_actual.year
+    else:
+        anio = fecha_actual.year
+    
+    # Obtener asistencias del mes
+    asistencias_mes = Asistencia.objects.filter(
+        fecha__year=anio,
+        fecha__month=mes
+    ).select_related('alumno').order_by('fecha', 'hora_entrada')
+    
+    # Estadísticas básicas del mes
+    total_asistencias = asistencias_mes.count()
+    
+    # Obtener el nombre del mes
+    import calendar
+    nombre_mes = calendar.month_name[mes]
+    
+    context = {
+        'mes': mes,
+        'anio': anio,
+        'nombre_mes': nombre_mes,
+        'asistencias_mes': asistencias_mes,
+        'total_asistencias': total_asistencias,
+    }
+    return render(request, 'asistencia/reporte_mensual.html', context)
+
+
+def exportar_reportes(request):
+    """
+    P11: Exportar reportes a Excel
+    Añadir funcionalidad a las vistas de reportes para que los datos puedan ser descargados en formato Excel
+    """
+    tipo_reporte = request.GET.get('tipo', 'diario')
+    
+    # Preparar datos según el tipo de reporte
+    if tipo_reporte == 'diario':
+        fecha = request.GET.get('fecha', str(date.today()))
+        try:
+            fecha_obj = date.fromisoformat(fecha)
+        except ValueError:
+            fecha_obj = date.today()
+        
+        asistencias = Asistencia.objects.filter(fecha=fecha_obj).select_related('alumno')
+        filename = f'reporte_diario_{fecha_obj.strftime("%Y-%m-%d")}'
+        
+    elif tipo_reporte == 'semanal':
+        fecha_inicio = request.GET.get('fecha_inicio', str(date.today() - timedelta(days=6)))
+        try:
+            fecha_inicio_obj = date.fromisoformat(fecha_inicio)
+            fecha_fin_obj = fecha_inicio_obj + timedelta(days=6)
+        except ValueError:
+            fecha_inicio_obj = date.today() - timedelta(days=6)
+            fecha_fin_obj = date.today()
+        
+        asistencias = Asistencia.objects.filter(
+            fecha__range=[fecha_inicio_obj, fecha_fin_obj]
+        ).select_related('alumno')
+        filename = f'reporte_semanal_{fecha_inicio_obj.strftime("%Y-%m-%d")}_al_{fecha_fin_obj.strftime("%Y-%m-%d")}'
+        
+    else:  # mensual
+        mes = int(request.GET.get('mes', date.today().month))
+        anio = int(request.GET.get('anio', date.today().year))
+        
+        asistencias = Asistencia.objects.filter(
+            fecha__year=anio,
+            fecha__month=mes
+        ).select_related('alumno')
+        filename = f'reporte_mensual_{anio}-{mes:02d}'
+    
+    return _exportar_excel(asistencias, filename, tipo_reporte)
+
+
+def _exportar_excel(asistencias, filename, tipo_reporte):
+    """
+    Función auxiliar para exportar datos a Excel
+    Requiere la librería openpyxl: pip install openpyxl
+    """
+    try:
+        import openpyxl
+        from django.http import HttpResponse
+        import io
+        
+        # Crear libro de Excel
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = f"Reporte {tipo_reporte.capitalize()}"
+        
+        # Encabezados
+        ws['A1'] = 'Alumno'
+        ws['B1'] = 'Número de Control'
+        ws['C1'] = 'Carrera'
+        ws['D1'] = 'Fecha'
+        ws['E1'] = 'Hora de Entrada'
+        
+        # Agregar datos
+        row = 2
+        for asistencia in asistencias:
+            ws[f'A{row}'] = asistencia.alumno.nombre
+            ws[f'B{row}'] = asistencia.alumno.num_control
+            ws[f'C{row}'] = asistencia.alumno.carrera
+            ws[f'D{row}'] = asistencia.fecha.strftime('%Y-%m-%d')
+            ws[f'E{row}'] = asistencia.hora_entrada.strftime('%H:%M:%S')
+            row += 1
+        
+        # Guardar en memoria
+        output = io.BytesIO()
+        wb.save(output)
+        output.seek(0)
+        
+        # Crear respuesta HTTP
+        response = HttpResponse(
+            output.getvalue(),
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = f'attachment; filename="{filename}.xlsx"'
+        return response
+        
+    except ImportError:
+        from django.http import HttpResponse
+        response = HttpResponse("Error: La librería openpyxl no está instalada. Instálela con 'pip install openpyxl'", 
+                              content_type='text/plain')
+        return response
+
+

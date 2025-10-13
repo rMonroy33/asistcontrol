@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'asistencia/css/forms.css' %}">
+    <title>Reporte Semanal - Sistema de Asistencia</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Reporte Semanal</h1>
+
+        <!-- Navegación -->
+        <div class="navigation">
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'reportes_principal' %}">← Volver a Reportes</a>
+        </div>
+
+        <!-- Formulario para seleccionar semana -->
+        <div class="filter-section">
+            <form method="get">
+                <div class="form-group">
+                    <label for="fecha_inicio">Fecha de inicio (7 días):</label>
+                    <input type="date" id="fecha_inicio" name="fecha_inicio" value="{{ fecha_inicio|date:'Y-m-d' }}" required>
+                    <button type="submit" class="btn-primary">Filtrar</button>
+                </div>
+                <small>Período: {{ fecha_inicio|date:"d/m/Y" }} al {{ fecha_fin|date:"d/m/Y" }}</small>
+            </form>
+        </div>
+
+        <!-- Desglose por días -->
+        {% if asistencias_por_dia %}
+            <div class="weekly-breakdown">
+                <h3>Asistencias por Día</h3>
+                {% for dia in asistencias_por_dia %}
+                    <div class="day-section">
+                        <h4>{{ dia.fecha|date:"l, d/m/Y" }} - {{ dia.total }} asistencia{{ dia.total|pluralize }}s</h4>
+                        
+                        {% if dia.asistencias %}
+                            <div class="day-attendance-list">
+                                {% for asistencia in dia.asistencias %}
+                                    <div class="asistencia-item">
+                                        <div class="alumno-info">
+                                            <strong>{{ asistencia.alumno.nombre }}</strong><br>
+                                            <small>{{ asistencia.alumno.carrera }} | {{ asistencia.alumno.num_control }}</small>
+                                        </div>
+                                        <div class="hora-info">
+                                            {{ asistencia.hora_entrada|time:"H:i" }}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p><em>No hay asistencias registradas este día</em></p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h3>No hay datos para esta semana</h3>
+                <p>No se encontraron registros para el período seleccionado</p>
+            </div>
+        {% endif %}
+        
+        <div class="export-section">
+            <a href="{% url 'exportar_reportes' %}?tipo=semanal&inicio={{ fecha_inicio|date:'Y-m-d' }}" 
+               class="btn-export">📊 Exportar a Excel</a>
+        </div>
+    </div>
+
+    <style>
+        .filter-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .weekly-breakdown {
+            margin: 20px 0;
+        }
+
+        .day-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .day-section h4 {
+            background: #007bff;
+            color: white;
+            padding: 15px;
+            margin: 0;
+        }
+
+        .day-attendance-list {
+            padding: 15px;
+        }
+
+        .asistencia-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .hora-info {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .export-section {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .btn-export {
+            background: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            transition: background 0.2s ease;
+        }
+
+        .btn-export:hover {
+            background: #218838;
+            text-decoration: none;
+        }
+    </style>
+</body>
+</html>
